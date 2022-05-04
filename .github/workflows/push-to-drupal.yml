@@ -1,0 +1,18 @@
+name: Push to drupalcode.org
+on:
+  push:
+    branches:
+      - '1.x'
+    tags:
+      - '*'
+jobs:
+  push:
+    name: Push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Push to drupalcode.org.
+        run: git push --tags "https://access-token:${{ secrets.DRUPAL_ACCESS_TOKEN }}@git.drupalcode.org/project/farm_farmlab.git" 1.x
