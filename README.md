@@ -1,18 +1,11 @@
 <!---
 Full module name and description.
 -->
-# farm_contrib_template
-Template for farmOS contrib modules.
+# farmOS FarmLab
+farmOS integration with [FarmLab](https://www.farmlab.com.au/)
 
 This module is an add-on for the [farmOS](http://drupal.org/project/farm)
 distribution.
-
-This repository can be used as a template for starting new
-farmOS contrib modules. It provides the following:
-- Standardized README.md template (see comments and remove what you don't need!)
-- Example module structure.
-- Github action for automated tests:
-  - PHPCS and PHPUnit
 
 <!---
 Geting started.
@@ -26,8 +19,9 @@ Document installation steps.
 
 Install as you would normally install a contributed drupal module.
 
-TODO: Are there good Dupal docs for this? Do we mention composer or?
-TODO: Link to releases.
+```
+composer require 'drupal/farm_farmlab:^1.0'
+```
 
 <!---
 Document any special configuration the module requires. For example:
@@ -36,6 +30,10 @@ Document any special configuration the module requires. For example:
 - External (client) configuration
 -->
 ### Configuration
+
+## Authentication
+
+TBD
 
 <!---
 Document features the module provides.
@@ -96,11 +94,11 @@ Include maintainers.
 ## Maintainers
 
 Current maintainers:
-- Full name (handle) - [profile](https://farmos.org)
+- Paul Weidner [@paul121](https://github.com/paul121)
 
 <!---
 Include sponsors.
 -->
 ## Sponsors
 This project has been sponsored by:
-- [Organization](https://farmos.org)
+- [Regen Digital](https://regenfarmersmutual.com/regendigital/)
