@@ -1,14 +1,14 @@
 {
-  "name": "paul121/farm_contrib_template",
-  "description": "Example farmOS contrib module.",
+  "name": "drupal/farm_farmlab",
+  "description": "farmOS integration with FarmLab.",
   "type": "drupal-module",
   "authors": [
       {
-          "name": "Author name",
-          "email": "info@farmos.org"
+          "name": "Paul Weidner",
+          "email": "paul.weidner@gmail.com"
       }
   ],
   "require": {
-    "farmos/farmos": "^2.0.0-beta3"
+    "farmos/farmos": "^2.0.0-beta4"
   }
 }
