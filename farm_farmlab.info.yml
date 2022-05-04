@@ -1,0 +1,5 @@
+name: FarmLab
+type: module
+description: farmOS integration with FarmLab.
+package: farmOS Contrib
+core_version_requirement: ^9
