@@ -34,3 +34,10 @@ farm_farmlab.revoke:
     _controller: Drupal\farm_farmlab\Controller\AuthController::revoke
   requirements:
     _permission: 'connect farmlab'
+farm_farmlab.boundaries:
+  path: 'farmlab/boundaries'
+  defaults:
+    _title: 'FarmLab boundaries'
+    _controller: Drupal\farm_farmlab\Controller\BoundariesController::boundaries
+  requirements:
+    _permission: 'use farmlab'
