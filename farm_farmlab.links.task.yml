@@ -1,0 +1,15 @@
+farm_farmlab.status:
+  base_route: farm_settings.settings_page
+  route_name: farm_farmlab.status
+  title: 'FarmLab'
+  weight: 6
+farm_farmlab.status_tab:
+  parent_id: farm_farmlab.status
+  route_name: farm_farmlab.status
+  title: 'Status'
+  weight: -5
+farm_farmlab.server_settings:
+  parent_id: farm_farmlab.status
+  route_name: farm_farmlab.server_settings
+  title: 'Server settings'
+  weight: 6

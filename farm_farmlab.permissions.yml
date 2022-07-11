@@ -1,2 +1,6 @@
 administer farm_farmlab:
   title: 'Administer farm_farmlab module'
+connect farmlab:
+  title: 'Connect farmOS to FarmLab account'
+use farmlab:
+  title: 'Use FarmLab integration'

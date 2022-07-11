@@ -5,3 +5,32 @@ farm_farmlab.server_settings:
     _form: Drupal\farm_farmlab\Form\FarmLabServerSettingsForm
   requirements:
     _permission: 'administer farm_farmlab'
+farm_farmlab.status:
+  path: 'farm/settings/farmlab'
+  defaults:
+    _title: 'FarmLab status'
+    _controller: Drupal\farm_farmlab\Controller\AuthController::status
+  requirements:
+    _permission:
+      'use farmlab'
+farm_farmlab.connect:
+  path: 'farmlab/auth/connect'
+  defaults:
+    _title: 'Connect FarmLab'
+    _controller: Drupal\farm_farmlab\Controller\AuthController::connect
+  requirements:
+    _permission: 'connect farmlab'
+farm_farmlab.grant:
+  path:  'farmlab/auth/grant'
+  defaults:
+    _title: 'Grant FarmLab'
+    _controller: Drupal\farm_farmlab\Controller\AuthController::grant
+  requirements:
+    _permission: 'connect farmlab'
+farm_farmlab.revoke:
+  path:  'farmlab/auth/revoke'
+  defaults:
+    _title: 'Revoke FarmLab'
+    _controller: Drupal\farm_farmlab\Controller\AuthController::revoke
+  requirements:
+    _permission: 'connect farmlab'
