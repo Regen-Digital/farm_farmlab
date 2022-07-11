@@ -35,6 +35,8 @@ class AuthController extends ControllerBase {
   /**
    * Constructs the BoundariesController.
    *
+   * @param \Drupal\Core\TypedData\Type\DateTimeInterface $time
+   *   The time service.
    * @param \Drupal\farm_farmlab\FarmLabClientInterface $farm_lab_client
    *   The FarmLabClient.
    */
