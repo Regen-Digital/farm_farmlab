@@ -1,0 +1,7 @@
+services:
+  farm_farmlab.farmlab_client_factory:
+    class: Drupal\farm_farmlab\FarmLabClientFactory
+    arguments: ['@config.factory', '@state']
+  farm_farmlab.farmlab_client:
+    class: Drupalfarm_farmlab\FarmLabClient
+    factory: farm_farmlab.farmlab_client_factory:getApiClient
