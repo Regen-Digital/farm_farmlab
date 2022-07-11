@@ -1,0 +1,4 @@
+api_url: 'https://farmlab.dev.vasat.io/vasat/api/'
+auth_url: 'https://vasat.io/vadmin/access/grant/oauth'
+client_id: ''
+cleint_secret: ''

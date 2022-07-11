@@ -1,0 +1,20 @@
+farm_farmlab.settings:
+  type: config_object
+  label: 'FarmLab Settings'
+  mapping:
+    api_url:
+      type: string
+      label: 'FarmLab server API URL'
+      description: 'The URL of the FarmLab server API.'
+    auth_url:
+      type: string
+      label: 'FarmLab auth URL'
+      description: 'The OAuth authentication URL for the FarmLab integration.'
+    client_id:
+      type: string
+      label: 'OAuth client ID'
+      description: 'The OAuth client ID for the FarmLab integration.'
+    client_secret:
+      type: string
+      label: 'OAuth client secret'
+      description: 'The OAuth client secret for the FarmLab integration.'
