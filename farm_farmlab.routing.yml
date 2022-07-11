@@ -1,0 +1,7 @@
+farm_farmlab.server_settings:
+  path: 'farm/settings/farmlab/server'
+  defaults:
+    _title: 'Server settings'
+    _form: Drupal\farm_farmlab\Form\FarmLabServerSettingsForm
+  requirements:
+    _permission: 'administer farm_farmlab'
