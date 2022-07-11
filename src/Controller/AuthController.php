@@ -5,6 +5,7 @@ namespace Drupal\farm_farmlab\Controller;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Link;
+use Drupal\Core\TypedData\Type\DateTimeInterface;
 use Drupal\Core\Url;
 use Drupal\farm_farmlab\FarmLabClientInterface;
 use Psy\Util\Json as BaseJson;
@@ -16,6 +17,13 @@ use Symfony\Component\HttpFoundation\Request;
  * Controller for authorizing and connecting with FarmLab.
  */
 class AuthController extends ControllerBase {
+
+  /**
+   * The time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected $time;
 
   /**
    * The FarmLabClient.
@@ -30,7 +38,8 @@ class AuthController extends ControllerBase {
    * @param \Drupal\farm_farmlab\FarmLabClientInterface $farm_lab_client
    *   The FarmLabClient.
    */
-  public function __construct(FarmLabClientInterface $farm_lab_client) {
+  public function __construct(DateTimeInterface $time, FarmLabClientInterface $farm_lab_client) {
+    $this->time = $time;
     $this->farmLabClient = $farm_lab_client;
   }
 
@@ -39,6 +48,7 @@ class AuthController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
+      $container->get('datetime.time'),
       $container->get('farm_farmlab.farmlab_client'),
     );
   }
@@ -164,7 +174,7 @@ class AuthController extends ControllerBase {
 
     // Set expiration time.
     $token = $token_body['payload'];
-    $now = \Drupal::time()->getCurrentTime();
+    $now = $this->time->getCurrentTime();
     $expires_at = $now + $token['expires_in'] ?? 0;
     $token['expires_at'] = $expires_at;
 
