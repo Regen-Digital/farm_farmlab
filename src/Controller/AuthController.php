@@ -5,7 +5,7 @@ namespace Drupal\farm_farmlab\Controller;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Link;
-use Drupal\Core\TypedData\Type\DateTimeInterface;
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Url;
 use Drupal\farm_farmlab\FarmLabClientInterface;
 use Psy\Util\Json as BaseJson;
@@ -35,12 +35,12 @@ class AuthController extends ControllerBase {
   /**
    * Constructs the BoundariesController.
    *
-   * @param \Drupal\Core\TypedData\Type\DateTimeInterface $time
+   * @param \Drupal\Component\Datetime\TimeInterface $time
    *   The time service.
    * @param \Drupal\farm_farmlab\FarmLabClientInterface $farm_lab_client
    *   The FarmLabClient.
    */
-  public function __construct(DateTimeInterface $time, FarmLabClientInterface $farm_lab_client) {
+  public function __construct(TimeInterface $time, FarmLabClientInterface $farm_lab_client) {
     $this->time = $time;
     $this->farmLabClient = $farm_lab_client;
   }
