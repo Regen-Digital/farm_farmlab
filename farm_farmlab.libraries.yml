@@ -1,0 +1,4 @@
+farmos-map-extent:
+  js:
+    js/farmos-map-extent/dist/farmos-map-extent.umd.js: { }
+
