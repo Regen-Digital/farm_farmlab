@@ -1,4 +1,8 @@
 farmos-map-extent:
   js:
     js/farmos-map-extent/dist/farmos-map-extent.umd.js: { }
-
+cadastral-form:
+  js:
+    js/cadastral-form.js: { }
+  dependencies:
+    - farm_farmlab/farmos-map-extent

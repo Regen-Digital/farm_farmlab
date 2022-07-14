@@ -41,3 +41,19 @@ farm_farmlab.boundaries:
     _controller: Drupal\farm_farmlab\Controller\BoundariesController::boundaries
   requirements:
     _permission: 'use farmlab'
+farm_farmlab.add_cadastral:
+  path: 'farmlab/cadastral'
+  defaults:
+    _title: 'Add cadastral'
+    _form: Drupal\farm_farmlab\Form\CadastralForm
+  requirements:
+    _permission: 'use farmlab'
+farm_farmlab.cadastral_geojson:
+  path: 'farmlab/cadastral/geojson'
+  defaults:
+    _title: 'Cadastral geojson'
+    _controller: Drupal\farm_farmlab\Controller\GeojsonController::cadastral
+  requirements:
+    _permission: 'use farmlab'
+  options:
+    no_cache: 'TRUE'
