@@ -79,20 +79,6 @@ class GeojsonController extends ControllerBase {
       $geom = $properties['geom'];
       unset($properties['geom']);
 
-      // Build description for popup.
-      $description = "";
-      $description_keys = [
-        'lotNumber' => $this->t('Lot number'),
-        'planNumber' => $this->t('Plan number'),
-        'councilName' => $this->t('Council name'),
-      ];
-      foreach ($description_keys as $key => $label) {
-        if (!empty($properties[$key])) {
-          $description .= "<li>$label: $properties[$key]</li>";
-        }
-      }
-      $properties['description'] = "<ul>$description</ul>";
-
       // Add the feature.
       $geojson['features'][] = [
         'type' => 'Feature',

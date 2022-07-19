@@ -94,7 +94,20 @@
             // Build the description div.
             const descriptionDiv = document.createElement('div');
             descriptionDiv.classList.add('ol-popup-description');
-            descriptionDiv.innerHTML = description;
+            const ul = document.createElement('ul');
+            const descriptionKeys = {
+              lotNumber: Drupal.t('Lot number'),
+              planNumber: Drupal.t('Plan number'),
+              councilName: Drupal.t('Council name'),
+            };
+            for (const [key, label] of Object.entries(descriptionKeys)) {
+              if (feature.get(key)) {
+                const li = document.createElement('li');
+                li.innerHTML = `${label}: ${feature.get(key)}`;
+                ul.append(li);
+              }
+            }
+            descriptionDiv.append(ul);
 
             // Create popup content.
             content = nameHeader.outerHTML + descriptionDiv.outerHTML;
