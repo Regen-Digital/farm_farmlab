@@ -1,11 +1,17 @@
-import {transformExtent} from 'ol/proj';
-import {fromExtent} from 'ol/geom/Polygon';
+import { transformExtent } from 'ol/proj';
+import { getTopLeft, getBottomLeft, getTopRight, getBottomRight } from 'ol/extent';
 
 const getCurrentViewExtentCoordinates = ({map}) => {
   const extent = map.getView().calculateExtent(map.getSize());
   const transformedExtent = transformExtent(extent, 'EPSG:3857', 'EPSG:4326');
-  const polygon = fromExtent(transformedExtent);
-  return polygon.getCoordinates()[0];
+  const tl = getTopLeft(transformedExtent);
+  return [
+    tl,
+    getBottomLeft(transformedExtent),
+    getBottomRight(transformedExtent),
+    getTopRight(transformedExtent),
+    tl
+  ];
 }
 
 window.farm_farmlab = {
