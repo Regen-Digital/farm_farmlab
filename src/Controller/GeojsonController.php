@@ -88,10 +88,10 @@ class GeojsonController extends ControllerBase {
       ];
       foreach ($description_keys as $key => $label) {
         if (!empty($properties[$key])) {
-          $description .= "<p>$label: $properties[$key]</p>";
+          $description .= "<li>$label: $properties[$key]</li>";
         }
       }
-      $properties['description'] = $description;
+      $properties['description'] = "<ul>$description</ul>";
 
       // Add the feature.
       $geojson['features'][] = [

@@ -63,10 +63,55 @@ class CadastralForm extends FormBase {
     ];
 
     // Load cadastrals button.
-    $form['load'] = [
+    $load = [
       '#type' => 'button',
       '#value' => $this->t('Load cadastrals'),
-      '#attributes' => ['id' => 'load-cadastrals'],
+      '#attributes' => [
+        'id' => 'load-cadastrals',
+        'style' => ['float: right;'],
+      ],
+    ];
+
+    // Table caption.
+    $table_caption = [
+      '#type' => 'div',
+      'name' => [
+        '#markup' => $this->t('Selected cadastrals'),
+        '#attributes' => [
+          'style' => ['float: left;'],
+        ],
+      ],
+      'load' => $load,
+    ];
+
+    // Table header.
+    $table_header = [
+      $this->t('Selected'),
+      $this->t('Name'),
+      $this->t('Lot number'),
+      $this->t('Plan number'),
+    ];
+
+    // Table.
+    $form['table'] = [
+      '#type' => 'table',
+      '#caption' => $table_caption,
+      '#header' => $table_header,
+      '#rows' => [],
+      '#attributes' => [
+        'id' => 'selected-cadastrals',
+      ],
+    ];
+
+    // Add a placeholder row to the empty table.
+    $form['table']['#rows'][] = [
+      'class' => 'placeholder',
+      'data' => [
+        [
+          'data' => $this->t('Zoom the map to the area of interest and load cadastrals. Then select the cadastrals to import as land assets.'),
+          'colspan' => 4,
+        ],
+      ],
     ];
 
     // Submit button.

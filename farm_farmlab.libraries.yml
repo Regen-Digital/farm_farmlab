@@ -2,6 +2,9 @@ farmos-map-extent:
   js:
     js/farmos-map-extent/dist/farmos-map-extent.umd.js: { }
 cadastral-form:
+  css:
+    theme:
+      css/cadastral-form.css: { }
   js:
     js/cadastral-form.js: { }
   dependencies:

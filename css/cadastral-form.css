@@ -1,0 +1,12 @@
+.ol-popup {
+  min-width: 250px;
+}
+
+.ol-popup .ol-popup-name .form-boolean.form-boolean--type-checkbox.cadastral {
+  margin: 0 .125em .125em;
+  vertical-align: middle;
+}
+
+table#selected-cadastrals tbody tr.placeholder.placeholder-hidden {
+  visibility: hidden;
+}
