@@ -57,3 +57,10 @@ farm_farmlab.cadastral_geojson:
     _permission: 'use farmlab'
   options:
     no_cache: 'TRUE'
+farm_farmlab.add_boundary:
+  path: 'farmlab/boundaries/add'
+  defaults:
+    _title: 'Add boundary'
+    _form: Drupal\farm_farmlab\Form\BoundaryForm
+  requirements:
+    _permission: 'connect farmlab'

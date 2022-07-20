@@ -1,0 +1,11 @@
+farm_farmlab.add_boundary:
+  route_name: farm_farmlab.add_boundary
+  title: 'Add boundary'
+  appears_on:
+    - farm_farmlab.boundaries
+  options:
+    attributes:
+      class:
+        - 'use-ajax'
+      data-dialog-type: 'modal'
+      data-dialog-options: '{"height": "auto", "width": "700px"}'
