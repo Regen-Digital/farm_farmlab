@@ -56,10 +56,17 @@ class BoundariesController extends ControllerBase {
     $boundaries = [];
     foreach ($boundaries_body["payload"] ?? [] as $boundary) {
 
-      $geom = \geoPHP::load(Json::encode($boundary['geojson']), 'json');
-      $reduced = \geoPHP::geometryReduce($geom);
-      $wkt = $reduced->out('wkt');
-
+      // Catch geos error:
+      // Exception: Points of LinearRing do not form a closed linestring in
+      // GEOSWKBReader->readHEX()
+      try {
+        $geom = \geoPHP::load(Json::encode($boundary['geojson']), 'json');
+        $reduced = \geoPHP::geometryReduce($geom);
+        $wkt = $reduced->out('wkt');
+      }
+      catch (\Exception $exception) {
+        continue;
+      }
       $boundaries[] = [
         'name' => $boundary['name'],
         'type' => $boundary['boundaryType'],
