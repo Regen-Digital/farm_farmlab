@@ -2,6 +2,8 @@
 
 namespace Drupal\farm_farmlab\Form;
 
+use Drupal\asset\Entity\Asset;
+use Drupal\Component\Serialization\Json;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -114,11 +116,15 @@ class CadastralForm extends FormBase {
       ],
     ];
 
+    $form['cadastral-data'] = [
+      '#type' => 'hidden',
+    ];
+
     // Submit button.
+    // Disable the submit button using js or else the form will not submit.
     $form['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Create Cadastrals'),
-      '#disabled' => TRUE,
     ];
 
     return $form;
@@ -128,7 +134,29 @@ class CadastralForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // @todo Implement submitForm() method.
+
+    // Create land asset for each selected feature.
+    $data = Json::decode($form_state->getValue('cadastral-data', '[]'));
+    foreach ($data as $feature) {
+      $asset = Asset::create([
+        'type' => 'land',
+        'status' => 'active',
+        'land_type' => 'property',
+        'name' => $feature['properties']['name'] ?? $feature['id'],
+        'intrinsic_geometry' => $feature['geometry'],
+        'is_fixed' => TRUE,
+      ]);
+      $asset->save();
+      $this->messenger()->addMessage(
+        $this->t(
+        'Created land asset <a href=":url">%label</a>',
+          [
+            ':url' => $asset->toUrl()->setAbsolute()->toString(),
+            '%label' => $asset->label(),
+          ],
+        ),
+      );
+    }
   }
 
 }

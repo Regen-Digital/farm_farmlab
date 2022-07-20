@@ -7,11 +7,19 @@
 
     attach: function (context, settings) {
 
+      // Disable submit button.
+      this.setSubmitButtonState(false);
+
       // Change Load cadastrals button behavior.
       context.getElementById('load-cadastrals').addEventListener("click", (event) => {
         event.preventDefault();
         this.updateLayer();
-      })
+      });
+
+      // Change Load cadastrals button behavior.
+      context.getElementById('farm-farmlab-cadastral-form').addEventListener("submit", (event) => {
+        this.submit();
+      });
     },
     createLayer: function (instance, url) {
 
@@ -207,12 +215,11 @@
 
       // Update the table to display the placeholder row if empty.
       const selectedRows = tableBody.querySelectorAll('tr[data-cadastral-id]');
-      if (selectedRows.length) {
-        tableBody.querySelector('tr.placeholder').classList.add('placeholder-hidden');
-      }
-      else {
-        tableBody.querySelector('tr.placeholder').classList.remove('placeholder-hidden');
-      }
+      const operator = selectedRows.length ? 'add' : 'remove';
+      tableBody.querySelector('tr.placeholder').classList[operator]('placeholder-hidden');
+
+      // Update submit button state.
+      Drupal.behaviors.farm_farmlab_cadastral.setSubmitButtonState(!!selectedRows.length);
     },
     createCheckbox: (id) => {
 
@@ -232,6 +239,37 @@
 
       return input;
     },
+    setSubmitButtonState: (enabled) => {
+
+      // Set state.
+      const button = document.getElementById('edit-submit');
+      button.disabled = !enabled;
+
+      // Update class list.
+      const operation = !enabled ? 'add' : 'remove';
+      button.classList[operation]('is-disabled');
+    },
+    submit: () => {
+
+      // Don't submit if there are no selected layers.
+      if (!Drupal.behaviors.farm_farmlab_cadastral.selectedLayer) {
+        return;
+      }
+
+      let data = [];
+      Drupal.behaviors.farm_farmlab_cadastral.selectedLayer.getSource().getFeatures().forEach((feature) => {
+        let properties = feature.getProperties();
+        delete properties.geometry;
+        data.push({
+          id: feature.getId(),
+          geometry: window.farm_farmlab.getFeaturesWKT([feature], window.farmOS.map.projection),
+          properties: properties,
+        });
+      });
+
+      // Update hidden input field.
+      document.querySelector('input[name="cadastral-data"]').value = JSON.stringify(data);
+    }
 
   };
 }(Drupal));
