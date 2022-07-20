@@ -1,5 +1,6 @@
 import { transformExtent } from 'ol/proj';
 import { getTopLeft, getBottomLeft, getTopRight, getBottomRight } from 'ol/extent';
+import { WKT } from 'ol/format';
 
 const getCurrentViewExtentCoordinates = ({map}) => {
   const extent = map.getView().calculateExtent(map.getSize());
@@ -14,6 +15,11 @@ const getCurrentViewExtentCoordinates = ({map}) => {
   ];
 }
 
+const getFeaturesWKT = (features, projection) => {
+  return new WKT().writeFeatures(features, projection);
+}
+
 window.farm_farmlab = {
   getCurrentViewExtentCoordinates,
+  getFeaturesWKT,
 }
