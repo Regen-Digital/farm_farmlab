@@ -126,7 +126,7 @@ class AuthController extends ControllerBase {
         'response_type' => 'code',
         'client_id' => $farmlab_settings->get('client_id'),
         'client_secret' => $farmlab_settings->get('client_secret'),
-        'state' => 'paul',
+        'state' => $this->getAuthorizationState(),
         // @todo Finalize OAuth scopes.
         'scope' => 'read search write update owner',
         'redirect_uri' => $this->redirectUri(),
@@ -169,7 +169,7 @@ class AuthController extends ControllerBase {
       'grant_type' => 'authorization_code',
       'client_id' => $farmlab_settings->get('client_id'),
       'client_secret' => $farmlab_settings->get('client_secret'),
-      'state' => 'paul',
+      'state' => $this->getAuthorizationState(),
       'code' => $code,
       'redirect_uri' => $this->redirectUri(),
     ];
@@ -192,6 +192,7 @@ class AuthController extends ControllerBase {
     $token['expires_at'] = $expires_at;
 
     $this->state()->set('farm_farmlab.token', $token);
+    $this->clearAuthorizationState();
     $this->messenger()->addMessage($this->t('FarmLab connection successful.'));
     return $redirect;
   }
@@ -213,6 +214,28 @@ class AuthController extends ControllerBase {
    */
   protected function redirectUri(): string {
     return Url::fromRoute('farm_farmlab.grant')->setAbsolute(TRUE)->toString();
+  }
+
+  /**
+   * Helper function that returns current authorization state.
+   *
+   * @return string
+   *   The authorization state.
+   */
+  protected function getAuthorizationState(): string {
+    $state = $this->state()->get('farm_farmlab.authorization_state');
+    if (empty($state)) {
+      $state = bin2hex(random_bytes(16));
+      $this->state()->set('farm_farmlab.authorization_state', $state);
+    }
+    return $state;
+  }
+
+  /**
+   * Helper function to clear the authorization state.
+   */
+  protected function clearAuthorizationState() {
+    $this->state()->delete('farm_farmlab.authorization_state');
   }
 
 }
