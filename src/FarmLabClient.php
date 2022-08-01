@@ -2,12 +2,20 @@
 
 namespace Drupal\farm_farmlab;
 
+use Drupal\Component\Serialization\Json;
 use GuzzleHttp\Client;
 
 /**
  * FarmLab client.
  */
 class FarmLabClient extends Client implements FarmLabClientInterface {
+
+  /**
+   * The FarmLab authorization URL.
+   *
+   * @var string
+   */
+  protected $authUrl;
 
   /**
    * The FarmLab OAuth token.
@@ -21,10 +29,13 @@ class FarmLabClient extends Client implements FarmLabClientInterface {
    *
    * @param string $api_url
    *   The FarmLab API base url.
+   * @param string $auth_url
+   *   The FarmLab authorization url.
    * @param array $config
    *   Guzzle client config.
    */
-  public function __construct(string $api_url, array $config = []) {
+  public function __construct(string $api_url, string $auth_url, array $config = []) {
+    $this->authUrl = trim($auth_url, '/');
     $this->token = [];
     $default_config = [
       'base_uri' => $api_url,
@@ -51,6 +62,35 @@ class FarmLabClient extends Client implements FarmLabClientInterface {
    */
   public function setToken(array $token) {
     $this->token = $token;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function grant(array $params): array {
+
+    // Create a new Guzzle client.
+    $client = new Client([
+      'base_uri' => $this->authUrl,
+      'http_errors' => FALSE,
+    ]);
+    $response = $client->request('POST', 'access/login', ['json' => $params]);
+    $token_body = Json::decode($response->getBody());
+
+    // Check for a valid token.
+    if (empty($token_body['payload'])) {
+      return [];
+    }
+
+    // Set expiration time.
+    $token = $token_body['payload'];
+    $now = \Drupal::time()->getCurrentTime();
+    $expires_at = $now + $token['expires_in'] ?? 0;
+    $token['expires_at'] = $expires_at;
+
+    // Set the token for the client and return.
+    $this->setToken($token);
+    return $token;
   }
 
   /**

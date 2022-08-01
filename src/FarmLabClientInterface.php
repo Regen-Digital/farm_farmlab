@@ -18,8 +18,22 @@ interface FarmLabClientInterface extends ClientInterface {
   public function setToken(array $token);
 
   /**
-   * Helper function to refresh the FarmLab OAuth token.
+   * Helper function to perform OAuth grants.
+   *
+   * @param array $params
+   *   Params for the OAuth grant.
+   *
+   * @return array
+   *   The new token.
    */
-  public function refreshToken();
+  public function grant(array $params): array;
+
+  /**
+   * Helper function to refresh the FarmLab OAuth token.
+   *
+   * @return array
+   *   The new token.
+   */
+  public function refreshToken(): array;
 
 }

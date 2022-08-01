@@ -49,7 +49,7 @@ class FarmLabClientFactory {
     $config = $this->configFactory->get('farm_farmlab.settings');
 
     // Create client and set the current token.
-    $client = new FarmLabClient($config->get('api_url'));
+    $client = new FarmLabClient($config->get('api_url'), $config->get('auth_url'));
     $client->setToken($this->state->get('farm_farmlab.token') ?? []);
 
     return $client;

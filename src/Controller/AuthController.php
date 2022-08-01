@@ -160,9 +160,6 @@ class AuthController extends ControllerBase {
       return $render;
     }
 
-    // Clear any token the client has.
-    $this->farmLabClient->setToken([]);
-
     // Complete the authorization flow.
     $farmlab_settings = $this->config('farm_farmlab.settings');
     $params = [
@@ -173,26 +170,18 @@ class AuthController extends ControllerBase {
       'code' => $code,
       'redirect_uri' => $this->redirectUri(),
     ];
-    $auth_url = $farmlab_settings->get('auth_url');
-    $auth_url = trim($auth_url, '/');
-    $response = $this->farmLabClient->request('POST', "$auth_url/access/login", ['json' => $params]);
-    $token_body = Json::decode($response->getBody());
+    $token = $this->farmLabClient->grant($params);
+    $this->clearAuthorizationState();
 
     // Check for a valid token.
     $redirect = new RedirectResponse(Url::fromRoute('farm_farmlab.status')->toString());
-    if (empty($token_body['payload'])) {
+    if (empty($token)) {
       $this->messenger()->addError($this->t('FarmLab connection failed. Please try again.'));
       return $redirect;
     }
 
-    // Set expiration time.
-    $token = $token_body['payload'];
-    $now = $this->time->getCurrentTime();
-    $expires_at = $now + $token['expires_in'] ?? 0;
-    $token['expires_at'] = $expires_at;
-
+    // Set the token in state.
     $this->state()->set('farm_farmlab.token', $token);
-    $this->clearAuthorizationState();
     $this->messenger()->addMessage($this->t('FarmLab connection successful.'));
     return $redirect;
   }
