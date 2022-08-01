@@ -215,12 +215,8 @@
         tableBody.prepend(newRow);
       }
 
-      // Update the table to display the placeholder row if empty.
-      const selectedRows = tableBody.querySelectorAll('tr[data-cadastral-id]');
-      const operator = selectedRows.length ? 'add' : 'remove';
-      tableBody.querySelector('tr.placeholder').classList[operator]('placeholder-hidden');
-
       // Update submit button state.
+      const selectedRows = tableBody.querySelectorAll('tr[data-cadastral-id]');
       Drupal.behaviors.farm_farmlab_cadastral.setSubmitButtonState(!!selectedRows.length);
     },
     createCheckbox: (id) => {

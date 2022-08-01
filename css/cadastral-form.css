@@ -7,6 +7,6 @@
   vertical-align: middle;
 }
 
-table#selected-cadastrals tbody tr.placeholder.placeholder-hidden {
+table#selected-cadastrals tbody tr.placeholder:not(:only-child) {
   display: none;
 }
