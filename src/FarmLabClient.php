@@ -53,7 +53,8 @@ class FarmLabClient extends Client implements FarmLabClientInterface {
     // Build an authorization header for each request refreshing the OAuth
     // token when necessary.
     $default_headers = $this->getAuthorizationHeader();
-    $options['headers'] = $options['headers'] ? $options['headers'] + $default_headers : $default_headers;
+    $headers = $options['headers'] ?? [];
+    $options['headers'] = $headers + $default_headers;
     return parent::requestAsync($method, $uri, $options);
   }
 
