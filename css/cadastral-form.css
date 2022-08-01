@@ -8,5 +8,5 @@
 }
 
 table#selected-cadastrals tbody tr.placeholder.placeholder-hidden {
-  visibility: hidden;
+  display: none;
 }
