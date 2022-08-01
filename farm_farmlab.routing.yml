@@ -38,7 +38,7 @@ farm_farmlab.boundaries:
   path: 'farmlab/boundaries'
   defaults:
     _title: 'FarmLab boundaries'
-    _controller: Drupal\farm_farmlab\Controller\BoundariesController::boundaries
+    _form: Drupal\farm_farmlab\Form\FarmLabBoundariesForm
   requirements:
     _permission: 'use farmlab'
 farm_farmlab.add_cadastral:
