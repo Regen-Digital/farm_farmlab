@@ -90,14 +90,30 @@ class FarmLabClient extends Client implements FarmLabClientInterface {
 
     // Set the token for the client and return.
     $this->setToken($token);
+    \Drupal::state()->set('farm_farmlab.token', $token);
     return $token;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function refreshToken() {
-    // @todo Implement refresh logic.
+  public function refreshToken(): array {
+
+    // Bail if there is no refresh token.
+    if (empty($this->token['refresh_token'])) {
+      return [];
+    }
+
+    // Build refresh token params.
+    $refresh_token = $this->token['refresh_token'];
+    $farmlab_settings = \Drupal::config('farm_farmlab.settings');
+    $params = [
+      'grant_type' => 'refresh_token',
+      'client_id' => $farmlab_settings->get('client_id'),
+      'client_secret' => $farmlab_settings->get('client_secret'),
+      'refresh_token' => $refresh_token,
+    ];
+    return $this->grant($params);
   }
 
   /**
@@ -119,9 +135,8 @@ class FarmLabClient extends Client implements FarmLabClientInterface {
 
     // Refresh the token if expired.
     $now = \Drupal::time()->getCurrentTime();
-    $expired = ($now + 60) > $this->token['expires_at'] ?? PHP_INT_MAX;
+    $expired = ($now + 120) > $this->token['expires_at'] ?? PHP_INT_MAX;
     if ($expired && $refresh) {
-      $this->setToken([]);
       $this->refreshToken();
       return $this->getAuthorizationHeader(FALSE);
     }

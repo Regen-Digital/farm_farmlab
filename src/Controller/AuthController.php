@@ -180,8 +180,6 @@ class AuthController extends ControllerBase {
       return $redirect;
     }
 
-    // Set the token in state.
-    $this->state()->set('farm_farmlab.token', $token);
     $this->messenger()->addMessage($this->t('FarmLab connection successful.'));
     return $redirect;
   }
