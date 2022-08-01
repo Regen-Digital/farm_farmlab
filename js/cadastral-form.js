@@ -119,6 +119,9 @@
 
             // Create popup content.
             content = nameHeader.outerHTML + descriptionDiv.outerHTML;
+
+            // Select the feature.
+            Drupal.behaviors.farm_farmlab_cadastral.updateSelection(featureId, true);
           }
         }
         return content;
@@ -149,14 +152,13 @@
         this.layer.getSource().refresh();
       }
     },
-    updateSelection: (element) => {
+    updateSelection: (featureId, selected) => {
 
       // Save layers.
       const sourceLayer = Drupal.behaviors.farm_farmlab_cadastral.layer;
       const selectedLayer = Drupal.behaviors.farm_farmlab_cadastral.selectedLayer;
 
       // Ensure the feature cadastral ID is set.
-      const featureId = element.getAttribute('data-cadastral-id');
       const sourceFeature = sourceLayer.getSource().getFeatureById(featureId);
       const selectedFeature = selectedLayer.getSource().getFeatureById(featureId);
       if (!sourceFeature) {
@@ -166,7 +168,7 @@
       // If not checked, unselect the cadastral.
       const tableBody = document.querySelector('table#selected-cadastrals tbody');
       const row = tableBody.querySelector(`tr[data-cadastral-id="${featureId}"]`);
-      if (!element.checked) {
+      if (!selected) {
 
         // Remove the row.
         if (row) {
@@ -180,11 +182,11 @@
 
       // Update other checkboxes for the same cadastral.
       document.querySelectorAll(`input[data-cadastral-id="${featureId}"]`).forEach((input) => {
-        input.checked = element.checked;
+        input.checked = selected;
       });
 
       // If checked, select the cadastral.
-      if (!row && element.checked) {
+      if (!row && selected) {
 
         // Clone the feature to the selected layer.
         const clonedFeature = sourceFeature.clone();
@@ -227,17 +229,20 @@
       const input = document.createElement('input');
       input.setAttribute('type', 'checkbox');
       input.setAttribute('data-cadastral-id', id);
-      input.setAttribute('onchange', 'Drupal.behaviors.farm_farmlab_cadastral.updateSelection(this)');
+      input.setAttribute('onchange', 'Drupal.behaviors.farm_farmlab_cadastral.checkboxChange(this)');
 
       // Add classes.
       input.classList.add('form-boolean', 'form-boolean--type-checkbox', 'cadastral');
 
-      // Set checked state.
-      if (Drupal.behaviors.farm_farmlab_cadastral.selectedLayer) {
-        input.defaultChecked = !!Drupal.behaviors.farm_farmlab_cadastral.selectedLayer.getSource().getFeatureById(id);
-      }
+      // Set checked state to true.
+      input.defaultChecked = true;
 
       return input;
+    },
+    checkboxChange: (element) => {
+      const featureId = element.getAttribute('data-cadastral-id');
+      const selected = element.checked;
+      Drupal.behaviors.farm_farmlab_cadastral.updateSelection(featureId, selected);
     },
     setSubmitButtonState: (enabled) => {
 
