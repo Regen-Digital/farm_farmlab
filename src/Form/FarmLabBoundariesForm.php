@@ -97,6 +97,9 @@ class FarmLabBoundariesForm extends FormBase {
     $form['map'] = [
       '#type' => 'farm_map',
       '#weight' => -10,
+      '#attached' => [
+        'library' => ['farm_farmlab/boundaries-form'],
+      ],
     ];
 
     return $form;

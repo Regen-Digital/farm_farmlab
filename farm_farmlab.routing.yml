@@ -41,6 +41,15 @@ farm_farmlab.boundaries:
     _form: Drupal\farm_farmlab\Form\FarmLabBoundariesForm
   requirements:
     _permission: 'use farmlab'
+farm_farmlab.boundaries_geojson:
+  path: 'farmlab/boundaries/geojson'
+  defaults:
+    _title: 'Boundaries geojson'
+    _controller: Drupal\farm_farmlab\Controller\GeojsonController::boundaries
+  requirements:
+    _permission: 'use farmlab'
+  options:
+    no_cache: 'TRUE'
 farm_farmlab.add_cadastral:
   path: 'farmlab/cadastral'
   defaults:

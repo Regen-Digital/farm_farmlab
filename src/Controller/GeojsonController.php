@@ -41,6 +41,47 @@ class GeojsonController extends ControllerBase {
   }
 
   /**
+   * Boundaries geojson.
+   */
+  public function boundaries() {
+
+    // Request all active boundaries.
+    $params = ['active' => 'true'];
+    $response = $this->farmLabClient->request('GET', 'Paddock', ['query' => $params]);
+
+    // Return on error.
+    if ($response->getStatusCode() != 200) {
+      return $response;
+    }
+
+    // Build geojson response.
+    $geojson = [
+      'type' => 'FeatureCollection',
+      'features' => [],
+    ];
+
+    // Parse each boundary into a feature.
+    $boundaries_body = Json::decode($response->getBody());
+    foreach ($boundaries_body['payload'] as $boundary) {
+
+      // Get the boundary geojson.
+      $feature = $boundary['geojson'];
+      unset($boundary['geojson']);
+
+      // Set the feature id.
+      $feature['id'] = $boundary['id'];
+
+      // Set the feature properties.
+      $feature['properties'] = $boundary;
+
+      // Add the feature.
+      $geojson['features'][] = $feature;
+    }
+
+    return JsonResponse::create($geojson);
+  }
+
+  /**
    * Cadastral geojson.
    */
   public function cadastral(Request $request) {
