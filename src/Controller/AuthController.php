@@ -126,11 +126,15 @@ class AuthController extends ControllerBase {
         'response_type' => 'code',
         'client_id' => $farmlab_settings->get('client_id'),
         'client_secret' => $farmlab_settings->get('client_secret'),
-        'scope' => 'read search update owner',
+        'state' => 'paul',
+        // @todo Finalize OAuth scopes.
+        'scope' => 'read search write update owner',
         'redirect_uri' => $this->redirectUri(),
       ],
     ];
-    $url = Url::fromUri($farmlab_settings->get('auth_url'), $options);
+    $auth_url = $farmlab_settings->get('auth_url');
+    $auth_url = trim($auth_url, '/');
+    $url = Url::fromUri("$auth_url/auth/grant", $options);
     $link = Link::fromTextAndUrl($this->t('Connect'), $url);
 
     // Render authorization link.
@@ -160,11 +164,18 @@ class AuthController extends ControllerBase {
     $this->farmLabClient->setToken([]);
 
     // Complete the authorization flow.
+    $farmlab_settings = $this->config('farm_farmlab.settings');
     $params = [
+      'grant_type' => 'authorization_code',
+      'client_id' => $farmlab_settings->get('client_id'),
+      'client_secret' => $farmlab_settings->get('client_secret'),
+      'state' => 'paul',
       'code' => $code,
       'redirect_uri' => $this->redirectUri(),
     ];
-    $response = $this->farmLabClient->request('GET', '/vasat/shepherd/auth', ['query' => $params]);
+    $auth_url = $farmlab_settings->get('auth_url');
+    $auth_url = trim($auth_url, '/');
+    $response = $this->farmLabClient->request('POST', "$auth_url/access/login", ['json' => $params]);
     $token_body = Json::decode($response->getBody());
 
     // Check for a valid token.
