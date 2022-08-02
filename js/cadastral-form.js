@@ -92,11 +92,17 @@
             var featureId = feature.getId();
             var description = feature.get('description') || '';
 
+            // Determine if the feature will be selected.
+            let selected = true;
+            if (Drupal.behaviors.farm_farmlab_cadastral.selectedLayer) {
+              selected = !Drupal.behaviors.farm_farmlab_cadastral.selectedLayer.getSource().getFeatureById(featureId);
+            }
+
             // Build the name header.
             const nameHeader = document.createElement('h4');
             nameHeader.classList.add('ol-popup-name');
             nameHeader.innerHTML = name;
-            const checkbox = Drupal.behaviors.farm_farmlab_cadastral.createCheckbox(featureId);
+            const checkbox = Drupal.behaviors.farm_farmlab_cadastral.createCheckbox(featureId, selected);
             nameHeader.prepend(checkbox);
 
             // Build the description div.
@@ -120,8 +126,8 @@
             // Create popup content.
             content = nameHeader.outerHTML + descriptionDiv.outerHTML;
 
-            // Select the feature.
-            Drupal.behaviors.farm_farmlab_cadastral.updateSelection(featureId, true);
+            // Finally toggle feature selection.
+            Drupal.behaviors.farm_farmlab_cadastral.updateSelection(featureId, selected);
           }
         }
         return content;
@@ -197,7 +203,7 @@
         const newRow = document.createElement('tr');
         newRow.setAttribute('data-cadastral-id', featureId);
         const featureValues = {
-          selected: Drupal.behaviors.farm_farmlab_cadastral.createCheckbox(featureId).outerHTML,
+          selected: Drupal.behaviors.farm_farmlab_cadastral.createCheckbox(featureId, true).outerHTML,
           name: sourceFeature.get('name'),
           lotNumber: sourceFeature.get('lotNumber'),
           planNumber: sourceFeature.get('planNumber'),
@@ -219,7 +225,7 @@
       const selectedRows = tableBody.querySelectorAll('tr[data-cadastral-id]');
       Drupal.behaviors.farm_farmlab_cadastral.setSubmitButtonState(!!selectedRows.length);
     },
-    createCheckbox: (id) => {
+    createCheckbox: (id, selected) => {
 
       // Create an input element.
       const input = document.createElement('input');
@@ -230,8 +236,8 @@
       // Add classes.
       input.classList.add('form-boolean', 'form-boolean--type-checkbox', 'cadastral');
 
-      // Set checked state to true.
-      input.defaultChecked = true;
+      // Set checked state.
+      input.defaultChecked = selected;
 
       return input;
     },
