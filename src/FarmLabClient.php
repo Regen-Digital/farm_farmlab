@@ -115,6 +115,27 @@ class FarmLabClient extends Client implements FarmLabClientInterface {
   /**
    * {@inheritdoc}
    */
+  public function getBoundaries(array $params = []): array {
+
+    // Limit to connected farm.
+    if ($this->farmId) {
+      $params += ['farm' => $this->farmId];
+    }
+    $response = $this->request('GET', 'Paddock', ['query' => $params]);
+
+    // Return empty on failure.
+    if ($response->getStatusCode() != 200) {
+      return [];
+    }
+
+    // Return the boundaries.
+    $response_body = Json::decode($response->getBody());
+    return $response_body['payload'] ?? [];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function setToken(array $token) {
     $this->token = $token;
   }

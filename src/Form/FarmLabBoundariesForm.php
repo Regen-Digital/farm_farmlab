@@ -2,7 +2,6 @@
 
 namespace Drupal\farm_farmlab\Form;
 
-use Drupal\Component\Serialization\Json;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\farm_farmlab\FarmLabClientInterface;
@@ -54,11 +53,6 @@ class FarmLabBoundariesForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
 
-    // Request all active boundaries.
-    $params = ['active' => 'true'];
-    $response = $this->farmLabClient->request('GET', 'Paddock', ['query' => $params]);
-    $boundaries_body = Json::decode($response->getBody());
-
     // Table header.
     $table_header = [
       'name' => $this->t('Name'),
@@ -82,8 +76,11 @@ class FarmLabBoundariesForm extends FormBase {
       'carbon_estimation_area' => $this->t('Carbon Estimation Area'),
     ];
 
+    // Request all active boundaries for the farm.
+    $boundaries = $this->farmLabClient->getBoundaries(['active' => 'true']);
+
     // Add each boundary to the table.
-    foreach ($boundaries_body["payload"] ?? [] as $boundary) {
+    foreach ($boundaries as $boundary) {
       $form['table']['#options'][$boundary['id']] = [
         'name' => $boundary['name'],
         'type' => $boundary_types[$boundary['boundaryType']] ?? $boundary['boundaryType'],

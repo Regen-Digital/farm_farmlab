@@ -26,6 +26,17 @@ interface FarmLabClientInterface extends ClientInterface {
   public function getFarm();
 
   /**
+   * Helper function to get boundaries associated with connected farm.
+   *
+   * @param array $params
+   *   Request params.
+   *
+   * @return array
+   *   Boundaries.
+   */
+  public function getBoundaries(array $params = []): array;
+
+  /**
    * Helper function to set the FarmLab OAuth token.
    *
    * @param array $token
