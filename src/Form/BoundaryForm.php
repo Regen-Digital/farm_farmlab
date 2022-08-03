@@ -11,6 +11,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element\Checkboxes;
 use Drupal\farm_farmlab\FarmLabClientInterface;
 use Drupal\farm_geo\Traits\WktTrait;
+use Drupal\Core\State\StateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -19,6 +20,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class BoundaryForm extends FormBase {
 
   use WktTrait;
+
+  /**
+   * The state service.
+   *
+   * @var \Drupal\Core\State\StateInterface
+   */
+  protected $state;
 
   /**
    * The entity type manager.
@@ -35,16 +43,27 @@ class BoundaryForm extends FormBase {
   protected $farmLabClient;
 
   /**
+   * The connected farm ID.
+   *
+   * @var int|null
+   */
+  protected $farmId;
+
+  /**
    * Constructs a CreateEstimateForm object.
    *
+   * @param \Drupal\Core\State\StateInterface $state
+   *   The state service.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
    * @param \Drupal\farm_farmlab\FarmLabClientInterface $farm_lab_client
    *   The FarmLab client.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, FarmLabClientInterface $farm_lab_client) {
+  public function __construct(StateInterface $state, EntityTypeManagerInterface $entity_type_manager, FarmLabClientInterface $farm_lab_client) {
     $this->entityTypeManager = $entity_type_manager;
     $this->farmLabClient = $farm_lab_client;
+    $this->state = $state;
+    $this->farmId = $this->state->get('farm_farmlab.farm_id');
   }
 
   /**
@@ -52,6 +71,7 @@ class BoundaryForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
+      $container->get('state'),
       $container->get('entity_type.manager'),
       $container->get('farm_farmlab.farmlab_client'),
     );
@@ -68,6 +88,12 @@ class BoundaryForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+
+    // Ensure connected to farm lab.
+    if (empty($this->farmId)) {
+      $form['error']['#markup'] = $this->t('Not connected to FarmLab.');
+      return $form;
+    }
 
     // Fieldset for asset selection.
     $form['asset_selection'] = [
@@ -206,6 +232,11 @@ class BoundaryForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
+    // Bail if no farm is connected.
+    if (empty($this->farmId)) {
+      return;
+    }
+
     // Get the submitted assets.
     $bulk = (boolean) $form_state->getValue('bulk');
     $asset_ids = $bulk
@@ -221,12 +252,9 @@ class BoundaryForm extends FormBase {
     $boundary_type = $form_state->getValue('boundary_type');
     foreach ($assets as $asset) {
 
-      // @todo Get the real farm ID.
-      $farm_id = 907;
-
       // Build payload.
       $payload = [
-        'farm' => ['id' => $farm_id],
+        'farm' => ['id' => $this->farmId],
         'name' => $asset->label(),
         // @todo Use correct FarmLab statuses.
         'status' => $asset->get('status')->value == 'active' ? 'scratched' : 'archived',
