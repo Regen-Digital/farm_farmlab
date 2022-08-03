@@ -65,10 +65,10 @@ class AuthController extends ControllerBase {
     $render = [];
 
     // Get the authenticated account.
-    $response = $this->farmLabClient->request('GET', 'Account');
+    $account = $this->farmLabClient->getAccount();
 
     // Display message on failure.
-    if ($response->getStatusCode() != 200) {
+    if (empty($account)) {
 
       $render['message'] = ['#markup' => $this->t('You must connect farmOS with your FarmLab account.')];
       $render['connect'] = Link::createFromRoute('Connect FarmLab', 'farm_farmlab.connect')->toRenderable();
@@ -81,6 +81,7 @@ class AuthController extends ControllerBase {
       // Render as a button.
       $render['connect']['#attributes']['class'][] = 'button';
       $render['connect']['#attributes']['class'][] = 'button--small';
+      return $render;
     }
 
     // Else render a reset button.
@@ -94,14 +95,26 @@ class AuthController extends ControllerBase {
     }
 
     // Render the account information in a text area.
-    $account_body = Json::decode($response->getBody());
     $render['account'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Account'),
-      '#value' => BaseJson::encode($account_body, JSON_PRETTY_PRINT),
+      '#value' => BaseJson::encode($account, JSON_PRETTY_PRINT),
       '#disabled' => TRUE,
       '#rows' => 8,
     ];
+
+    // Get the authenticated account.
+    if ($farm = $this->farmLabClient->getFarm()) {
+
+      // Render the farm information in a text area.
+      $render['farm'] = [
+        '#type' => 'textarea',
+        '#title' => $this->t('Farm'),
+        '#value' => BaseJson::encode($farm, JSON_PRETTY_PRINT),
+        '#disabled' => TRUE,
+        '#rows' => 8,
+      ];
+    }
 
     return $render;
   }
@@ -180,6 +193,25 @@ class AuthController extends ControllerBase {
       return $redirect;
     }
 
+    // Get the list of available farms.
+    $params = ['limit' => 1];
+    $response = $this->farmLabClient->request('GET', 'Farm', ['params' => $params]);
+
+    // Display message on failure.
+    if ($response->getStatusCode() != 200) {
+      $this->messenger()->addError($this->t('FarmLab connection failed. No Farm associated with account.'));
+    }
+
+    // Get the farm data.
+    $farm_body = Json::decode($response->getBody());
+    if (empty($farm_body['payload'])) {
+      $this->messenger()->addError($this->t('FarmLab connection failed. No Farm associated with account.'));
+    }
+
+    // Set the farm_id to state.
+    $farm = reset($farm_body['payload']);
+    $this->state()->set('farm_farmlab.farm_id', $farm['id']);
+
     $this->messenger()->addMessage($this->t('FarmLab connection successful.'));
     return $redirect;
   }
@@ -189,6 +221,7 @@ class AuthController extends ControllerBase {
    */
   public function revoke() {
     $this->state()->delete('farm_farmlab.token');
+    $this->state()->delete('farm_farmlab.farm_id');
     $this->messenger()->addMessage($this->t('The FarmLab authentication was reset.'));
     return new RedirectResponse(Url::fromRoute('farm_farmlab.status')->toString());
   }

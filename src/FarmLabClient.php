@@ -25,6 +25,13 @@ class FarmLabClient extends Client implements FarmLabClientInterface {
   protected $token;
 
   /**
+   * The connected farm ID.
+   *
+   * @var int|null
+   */
+  protected $farmId;
+
+  /**
    * FarmLab client constructor.
    *
    * @param string $api_url
@@ -36,6 +43,7 @@ class FarmLabClient extends Client implements FarmLabClientInterface {
    */
   public function __construct(string $api_url, string $auth_url, array $config = []) {
     $this->authUrl = trim($auth_url, '/');
+    $this->farmId = $config['farm_id'] ?? NULL;
     $this->token = [];
     $default_config = [
       'base_uri' => $api_url,
@@ -56,6 +64,52 @@ class FarmLabClient extends Client implements FarmLabClientInterface {
     $headers = $options['headers'] ?? [];
     $options['headers'] = $headers + $default_headers;
     return parent::requestAsync($method, $uri, $options);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getAccount() {
+
+    // Get the authenticated account.
+    $response = $this->request('GET', 'Account');
+
+    // Return empty on failure.
+    if ($response->getStatusCode() != 200) {
+      return NULL;
+    }
+
+    // Return the first account.
+    $response_body = Json::decode($response->getBody());
+    if (isset($response_body['payload']) && count($response_body['payload'])) {
+      return reset($response_body['payload']);
+    }
+
+    // Else return empty array.
+    return NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFarm() {
+
+    // Bail if no farm ID.
+    if (empty($this->farmId)) {
+      return NULL;
+    }
+
+    // Get the connected farm by ID.
+    $response = $this->request('GET', "Farm/$this->farmId");
+
+    // Return empty on failure.
+    if ($response->getStatusCode() != 200) {
+      return NULL;
+    }
+
+    // Return the farm.
+    $response_body = Json::decode($response->getBody());
+    return $response_body['payload'] ?? NULL;
   }
 
   /**

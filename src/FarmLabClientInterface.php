@@ -10,6 +10,22 @@ use GuzzleHttp\ClientInterface;
 interface FarmLabClientInterface extends ClientInterface {
 
   /**
+   * Helper function to get the authorized account.
+   *
+   * @return array|null
+   *   The authorized account.
+   */
+  public function getAccount();
+
+  /**
+   * Helper function to get the connected farm.
+   *
+   * @return array|null
+   *   The farm data.
+   */
+  public function getFarm();
+
+  /**
    * Helper function to set the FarmLab OAuth token.
    *
    * @param array $token
