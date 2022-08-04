@@ -199,13 +199,15 @@ class AuthController extends ControllerBase {
 
     // Display message on failure.
     if ($response->getStatusCode() != 200) {
-      $this->messenger()->addError($this->t('FarmLab connection failed. No Farm associated with account.'));
+      $this->messenger()->addError($this->t('FarmLab connection failed. Failed to request farms.'));
+      return $redirect;
     }
 
     // Get the farm data.
     $farm_body = Json::decode($response->getBody());
     if (empty($farm_body['payload'])) {
       $this->messenger()->addError($this->t('FarmLab connection failed. No Farm associated with account.'));
+      return $redirect;
     }
 
     // Set the farm_id to state.
