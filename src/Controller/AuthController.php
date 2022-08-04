@@ -199,6 +199,7 @@ class AuthController extends ControllerBase {
 
     // Display message on failure.
     if ($response->getStatusCode() != 200) {
+      $this->getLogger('farm_farmlab')->error($response->getBody());
       $this->messenger()->addError($this->t('FarmLab connection failed. Failed to request farms.'));
       return $redirect;
     }
