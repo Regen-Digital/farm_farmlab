@@ -195,7 +195,7 @@ class AuthController extends ControllerBase {
 
     // Get the list of available farms.
     $params = ['limit' => 1];
-    $response = $this->farmLabClient->request('GET', 'Farm', ['params' => $params]);
+    $response = $this->farmLabClient->request('GET', 'Farm', ['query' => $params]);
 
     // Display message on failure.
     if ($response->getStatusCode() != 200) {
