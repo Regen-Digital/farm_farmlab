@@ -88,7 +88,7 @@ class GeojsonController extends ControllerBase {
       "type" => "Polygon",
       "coordinates" => [$points],
     ];
-    $response = $this->farmLabClient->request('POST', '/vasat/harvest/searchBounds', ['json' => $payload]);
+    $response = $this->farmLabClient->request('POST', '/harvest/searchBounds', ['json' => $payload]);
 
     // Return on error.
     if ($response->getStatusCode() != 200) {
