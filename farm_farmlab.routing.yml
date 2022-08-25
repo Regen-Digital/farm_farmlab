@@ -30,7 +30,7 @@ farm_farmlab.grant:
 farm_farmlab.connect_farm:
   path: 'farmlab/connect-farm'
   defaults:
-    _title: 'Connect Farm'
+    _title: 'Connect FarmLab Farm'
     _form: Drupal\farm_farmlab\Form\ConnectFarmForm
   requirements:
     _custom_access: Drupal\farm_farmlab\Form\ConnectFarmForm::access

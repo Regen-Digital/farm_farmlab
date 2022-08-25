@@ -94,12 +94,11 @@ class ConnectFarmForm extends FormBase {
     // Farm select options.
     $form['option'] = [
       '#type' => 'radios',
-      '#title' => $this->t('How to connect?'),
+      '#title' => $this->t('Select a farm to connect:'),
       '#options' => [
-        'new' => $this->t('Create new'),
-        'existing' => $this->t('Connect existing'),
+        'existing' => $this->t('Connect existing farm'),
+        'new' => $this->t('Create new farm'),
       ],
-      '#default_value' => 'new',
       '#attributes' => [
         'name' => 'option',
       ],
@@ -154,8 +153,11 @@ class ConnectFarmForm extends FormBase {
     // New farm option.
     $form['new'] = [
       '#tree' => TRUE,
-      '#type' => 'container',
-      '#title' => $this->t('Create new farm'),
+      '#type' => 'details',
+      '#title' => $this->t('New farm details'),
+      '#description' => $this->t('These farm details can be modified in FarmLab after creation.'),
+      '#open' => TRUE,
+      '#collapsible' => FALSE,
       '#states' => [
         'visible' => [
           ':input[name="option"]' => ['value' => 'new'],
@@ -165,7 +167,6 @@ class ConnectFarmForm extends FormBase {
     $form['new']['farm_name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Farm name'),
-      '#description' => $this->t('The name of the new FarmLab farm.'),
     ];
     $form['new']['owner_name'] = [
       '#type' => 'textfield',
@@ -187,7 +188,7 @@ class ConnectFarmForm extends FormBase {
     // Existing field.
     $form['existing_farm'] = [
       '#type' => 'select',
-      '#title' => $this->t('Existing farm options'),
+      '#title' => $this->t('Existing farms:'),
       '#options' => $existing_farm_options,
       '#states' => [
         'visible' => [
