@@ -13,3 +13,12 @@ farm_farmlab.server_settings:
   route_name: farm_farmlab.server_settings
   title: 'Server settings'
   weight: 6
+farm_farmlab.boundaries:
+  base_route: farm_farmlab.boundaries
+  route_name: farm_farmlab.boundaries
+  title: 'Boundaries'
+farm_farmlab.cadastral:
+  base_route: farm_farmlab.boundaries
+  route_name: farm_farmlab.cadastral
+  title: 'Cadastrals'
+  weight: 5
