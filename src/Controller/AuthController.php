@@ -139,8 +139,7 @@ class AuthController extends ControllerBase {
         'client_id' => $farmlab_settings->get('client_id'),
         'client_secret' => $farmlab_settings->get('client_secret'),
         'state' => $this->getAuthorizationState(),
-        // @todo Finalize OAuth scopes.
-        'scope' => 'read search write update owner',
+        'scope' => 'read search write update owner app',
         'redirect_uri' => $this->redirectUri(),
       ],
     ];
