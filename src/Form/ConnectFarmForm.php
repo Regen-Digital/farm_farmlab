@@ -134,7 +134,7 @@ class ConnectFarmForm extends FormBase {
     // Default to the single option.
     elseif ($farm_count == 1) {
       $farm = reset($farm_body['payload']);
-      $form['option']['#options'][$farm['id']] = $farm['name'];
+      $form['option']['#options'][$farm['id']] = $this->farmLabel($farm);
       $form['option']['#default_value'] = $farm['id'];
       unset($form['option']['#options']['existing']);
     }
@@ -146,7 +146,7 @@ class ConnectFarmForm extends FormBase {
 
       // Existing farm options.
       foreach ($farm_body['payload'] as $farm) {
-        $existing_farm_options[$farm['id']] = $farm['name'];
+        $existing_farm_options[$farm['id']] = $this->farmLabel($farm);
       }
     }
 
@@ -262,6 +262,30 @@ class ConnectFarmForm extends FormBase {
       $this->messenger()->addError($this->t('Failed to connect FarmLab Farm. Please try again.'));
       $form_state->setRedirect('farm_farmlab.select_farm');
     }
+  }
+
+  /**
+   * Helper function to generate farm labels.
+   *
+   * @param array $farm
+   *   The farm data.
+   *
+   * @return string
+   *   The farm label.
+   */
+  protected function farmLabel(array $farm): string {
+
+    // Append unsubscribed or subscribed.
+    $name = $farm['name'];
+    $dormant = $farm['dormant'];
+    if ($dormant) {
+      $name .= ' (' . $this->t('unsubscribed') . ')';
+    }
+    else {
+      $name .= ' (' . $this->t('subscribed') . ')';
+    }
+
+    return $name;
   }
 
 }
