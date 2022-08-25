@@ -102,8 +102,18 @@ class AuthController extends ControllerBase {
       '#rows' => 8,
     ];
 
-    // Get the authenticated account.
-    if ($farm = $this->farmLabClient->getFarm()) {
+    // If no farm_id is set, display link to select a farm.
+    if (!$this->state()->get('farm_farmlab.farm_id')) {
+      $render['farm'] = [
+        '#markup' => $this->t('No FarmLab farm connected. Select a FarmLab Farm to finish connecting farmOS with FarmLab.'),
+      ];
+      $render['select-farm'] = Link::createFromRoute($this->t('Connect FarmLab farm'), 'farm_farmlab.connect_farm')->toRenderable();
+      $render['select-farm']['#weight'] = 50;
+      $render['select-farm']['#attributes']['class'][] = 'button';
+      $render['select-farm']['#attributes']['class'][] = 'button--primary';
+    }
+    // Else display selected farm info.
+    elseif ($farm = $this->farmLabClient->getFarm()) {
 
       // Render the farm information in a text area.
       $render['farm'] = [

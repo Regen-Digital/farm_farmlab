@@ -27,6 +27,13 @@ farm_farmlab.grant:
     _controller: Drupal\farm_farmlab\Controller\AuthController::grant
   requirements:
     _permission: 'connect farmlab'
+farm_farmlab.connect_farm:
+  path: 'farmlab/connect-farm'
+  defaults:
+    _title: 'Connect Farm'
+    _form: Drupal\farm_farmlab\Form\ConnectFarmForm
+  requirements:
+    _custom_access: Drupal\farm_farmlab\Form\ConnectFarmForm::access
 farm_farmlab.revoke:
   path:  'farmlab/auth/revoke'
   defaults:
