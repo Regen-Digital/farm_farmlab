@@ -2,7 +2,6 @@
 
 namespace Drupal\farm_farmlab\Controller;
 
-use Drupal\Component\Serialization\Json;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Link;
 use Drupal\Component\Datetime\TimeInterface;
@@ -187,36 +186,21 @@ class AuthController extends ControllerBase {
     $this->clearAuthorizationState();
 
     // Check for a valid token.
-    $redirect = new RedirectResponse(Url::fromRoute('farm_farmlab.status')->toString());
     if (empty($token)) {
-      $this->messenger()->addError($this->t('FarmLab connection failed. Please try again.'));
-      return $redirect;
+      $this->messenger()->addError($this->t('FarmLab connection failed. Could not retrieve token. Please try again.'));
+      return new RedirectResponse(Url::fromRoute('farm_farmlab.status')->toString());
     }
 
-    // Get the list of available farms.
-    $params = ['limit' => 1];
-    $response = $this->farmLabClient->request('GET', 'Farm', ['query' => $params]);
-
-    // Display message on failure.
-    if ($response->getStatusCode() != 200) {
-      $this->getLogger('farm_farmlab')->error($response->getBody());
-      $this->messenger()->addError($this->t('FarmLab connection failed. Failed to request farms.'));
-      return $redirect;
+    // Connect the account.
+    if ($account = $this->farmLabClient->getAccount()) {
+      \Drupal::state()->set('farm_farmlab.account_id', $account['id']);
+    }
+    else {
+      $this->messenger()->addError($this->t('FarmLab connection failed. Could not connect account. Please try again.'));
+      return new RedirectResponse(Url::fromRoute('farm_farmlab.status')->toString());
     }
 
-    // Get the farm data.
-    $farm_body = Json::decode($response->getBody());
-    if (empty($farm_body['payload'])) {
-      $this->messenger()->addError($this->t('FarmLab connection failed. No Farm associated with account.'));
-      return $redirect;
-    }
-
-    // Set the farm_id to state.
-    $farm = reset($farm_body['payload']);
-    $this->state()->set('farm_farmlab.farm_id', $farm['id']);
-
-    $this->messenger()->addMessage($this->t('FarmLab connection successful.'));
-    return $redirect;
+    return new RedirectResponse(Url::fromRoute('farm_farmlab.status')->toString());
   }
 
   /**
@@ -224,6 +208,7 @@ class AuthController extends ControllerBase {
    */
   public function revoke() {
     $this->state()->delete('farm_farmlab.token');
+    $this->state()->delete('farm_farmlab.account_id');
     $this->state()->delete('farm_farmlab.farm_id');
     $this->messenger()->addMessage($this->t('The FarmLab authentication was reset.'));
     return new RedirectResponse(Url::fromRoute('farm_farmlab.status')->toString());
