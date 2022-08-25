@@ -69,17 +69,24 @@ class AuthController extends ControllerBase {
     // Display message on failure.
     if (empty($account)) {
 
-      $render['message'] = ['#markup' => $this->t('You must connect farmOS with your FarmLab account.')];
-      $render['connect'] = Link::createFromRoute('Connect FarmLab', 'farm_farmlab.connect')->toRenderable();
+      // Display message.
+      $render['message'] = [
+        '#type' => 'container',
+        'message' => [
+          '#markup' => $this->t('No FarmLab account connected. Connect a FarmLab account and farm to use FarmLab features.'),
+        ],
+      ];
+      $connect = Link::createFromRoute('Connect FarmLab', 'farm_farmlab.connect')->toRenderable();
 
       // Open in a modal.
-      $render['connect']['#attributes']['class'][] = 'use-ajax';
-      $render['connect']['#attributes']['data-dialog-type'] = 'modal';
-      $render['connect']['#attributes']['data-dialog-options'] = '{"height": "auto", "width": "500px"}';
+      $connect['#attributes']['class'][] = 'use-ajax';
+      $connect['#attributes']['data-dialog-type'] = 'modal';
+      $connect['#attributes']['data-dialog-options'] = '{"height": "auto", "width": "500px"}';
 
       // Render as a button.
-      $render['connect']['#attributes']['class'][] = 'button';
-      $render['connect']['#attributes']['class'][] = 'button--small';
+      $connect['#attributes']['class'][] = 'button';
+      $connect['#attributes']['class'][] = 'button--small';
+      $render['connect'] = $connect;
       return $render;
     }
 
@@ -105,12 +112,14 @@ class AuthController extends ControllerBase {
     // If no farm_id is set, display link to select a farm.
     if (!$this->state()->get('farm_farmlab.farm_id')) {
       $render['farm'] = [
-        '#markup' => $this->t('No FarmLab farm connected. Select a FarmLab Farm to finish connecting farmOS with FarmLab.'),
+        '#type' => 'container',
+        'message' => [
+          '#markup' => $this->t('No FarmLab farm connected. A FarmLab Farm must be connected to sync boundaries between applications.'),
+        ],
       ];
       $render['select-farm'] = Link::createFromRoute($this->t('Connect FarmLab farm'), 'farm_farmlab.connect_farm')->toRenderable();
       $render['select-farm']['#weight'] = 50;
       $render['select-farm']['#attributes']['class'][] = 'button';
-      $render['select-farm']['#attributes']['class'][] = 'button--primary';
     }
     // Else display selected farm info.
     elseif ($farm = $this->farmLabClient->getFarm()) {
