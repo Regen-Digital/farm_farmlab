@@ -146,6 +146,15 @@ class CadastralForm extends FormBase {
         'intrinsic_geometry' => $feature['geometry'],
         'is_fixed' => TRUE,
       ]);
+
+      // Add cadastral id tags.
+      if (!empty($feature['properties']['lotNumber'])) {
+        $asset->get('id_tag')->appendItem(['type' => 'cadastral_lot_number', 'id' => $feature['properties']['lotNumber']]);
+      }
+      if (!empty($feature['properties']['planNumber'])) {
+        $asset->get('id_tag')->appendItem(['type' => 'cadastral_plan_number', 'id' => $feature['properties']['planNumber']]);
+      }
+
       $asset->save();
       $this->messenger()->addMessage(
         $this->t(
