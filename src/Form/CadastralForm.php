@@ -77,12 +77,6 @@ class CadastralForm extends FormBase {
     // Table caption.
     $table_caption = [
       '#type' => 'div',
-      'name' => [
-        '#markup' => $this->t('Selected cadastrals'),
-        '#attributes' => [
-          'style' => ['float: left;'],
-        ],
-      ],
       'load' => $load,
     ];
 
