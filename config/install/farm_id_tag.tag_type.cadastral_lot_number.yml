@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - farm_farmlab
+id: cadastral_lot_number
+label: Cadastral lot number
+bundles:
+  - land
