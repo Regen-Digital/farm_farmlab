@@ -252,6 +252,21 @@ class BoundaryForm extends FormBase {
     $boundary_type = $form_state->getValue('boundary_type');
     foreach ($assets as $asset) {
 
+      // Check if the asset already has a FarmLab ID.
+      $id_tags = $asset->get('id_tag')->getValue();
+      if (!empty($id_tags) && in_array('farmlab_id', array_column($id_tags, 'type'))) {
+        $this->messenger()->addWarning(
+          $this->t(
+           'Skipping asset <a href=":url">%label</a> because it already has a FarmLab ID.',
+           [
+             ':url' => $asset->toUrl()->setAbsolute()->toString(),
+             '%label' => $asset->label(),
+           ],
+         ),
+        );
+        continue;
+      }
+
       // Build payload.
       $payload = [
         'farm' => ['id' => $this->farmId],
@@ -271,7 +286,17 @@ class BoundaryForm extends FormBase {
         'properties' => [],
         'geometry' => $geojson,
       ];
-      $this->farmLabClient->request('POST', 'Paddock', ['json' => $payload]);
+
+      // Create the Paddock in FarmLab.
+      $response = $this->farmLabClient->request('POST', 'Paddock', ['json' => $payload]);
+      $response_body = (string) $response->getBody();
+      $response_json = Json::decode($response_body);
+
+      // Add the FarmLab ID to the land asset.
+      if ($response_json && isset($response_json['payload']['id'])) {
+        $asset->get('id_tag')->appendItem(['type' => 'farmlab_id', 'id' => $response_json['payload']['id']]);
+        $asset->save();
+      }
     }
 
     // Redirect to boundaries page.
