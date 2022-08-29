@@ -63,6 +63,14 @@ class AuthController extends ControllerBase {
   public function status(): array {
     $render = [];
 
+    // Start a debug area.
+    $render['debug'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Debug info'),
+      '#open' => FALSE,
+      '#weight' => 100,
+    ];
+
     // Get the authenticated account.
     $account = $this->farmLabClient->getAccount();
 
@@ -100,8 +108,28 @@ class AuthController extends ControllerBase {
       $render['revoke']['#attributes']['class'][] = 'button--danger';
     }
 
-    // Render the account information in a text area.
+    // Render list of account attributes.
+    $account_keys = [
+      'id' => $this->t('ID'),
+      'name' => $this->t('Name'),
+      'desc' => $this->t('Description'),
+    ];
     $render['account'] = [
+      '#theme' => 'item_list',
+      '#list_type' => 'ul',
+      '#title' => $this->t('Connected account'),
+      '#items' => [],
+    ];
+    foreach ($account_keys as $key => $label) {
+      if ($value = $account[$key]) {
+        $render['account']['#items'][] = [
+          '#markup' => "$label: $value",
+        ];
+      }
+    }
+
+    // Render the account information in a text area.
+    $render['debug']['account'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Account'),
       '#value' => BaseJson::encode($account, JSON_PRETTY_PRINT),
@@ -124,8 +152,32 @@ class AuthController extends ControllerBase {
     // Else display selected farm info.
     elseif ($farm = $this->farmLabClient->getFarm()) {
 
-      // Render the farm information in a text area.
+      // Render list of farm attributes.
+      $farm_keys = [
+        'id' => $this->t('ID'),
+        'name' => $this->t('Name'),
+        'ownerName' => $this->t("Owner's name"),
+        'ownerPhone' => $this->t("Owner's phone"),
+        'ownerEmail' => $this->t("Owner's email"),
+        'desc' => $this->t('Description'),
+        'notes' => $this->t('Notes'),
+      ];
       $render['farm'] = [
+        '#theme' => 'item_list',
+        '#list_type' => 'ul',
+        '#title' => $this->t('Connected farm'),
+        '#items' => [],
+      ];
+      foreach ($farm_keys as $key => $label) {
+        if ($value = $farm[$key]) {
+          $render['farm']['#items'][] = [
+            '#markup' => "$label: $value",
+          ];
+        }
+      }
+
+      // Render the farm information in a text area.
+      $render['debug']['farm'] = [
         '#type' => 'textarea',
         '#title' => $this->t('Farm'),
         '#value' => BaseJson::encode($farm, JSON_PRETTY_PRINT),
