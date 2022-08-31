@@ -290,7 +290,7 @@ class AuthController extends ControllerBase {
 
     // Save the account to state.
     if (!empty($account)) {
-      \Drupal::state()->set('farm_farmlab.account_id', $account['id']);
+      $this->state()->set('farm_farmlab.account_id', $account['id']);
     }
     else {
       $this->messenger()->addError($this->t('FarmLab connection failed. Could not connect account. Please try again.'));

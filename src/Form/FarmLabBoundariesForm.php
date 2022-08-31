@@ -4,6 +4,7 @@ namespace Drupal\farm_farmlab\Form;
 
 use Drupal\asset\Entity\Asset;
 use Drupal\Component\Serialization\Json;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Render\Element\Checkboxes;
 use Drupal\Core\Render\Element\Tableselect;
 use Drupal\Core\Form\FormBase;
@@ -21,6 +22,13 @@ class FarmLabBoundariesForm extends FormBase {
   use WktTrait;
 
   /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * The FarmLabClient.
    *
    * @var \Drupal\farm_farmlab\FarmLabClientInterface
@@ -30,10 +38,13 @@ class FarmLabBoundariesForm extends FormBase {
   /**
    * Constructs the BoundariesController.
    *
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    * @param \Drupal\farm_farmlab\FarmLabClientInterface $farm_lab_client
    *   The FarmLabClient.
    */
-  public function __construct(FarmLabClientInterface $farm_lab_client) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, FarmLabClientInterface $farm_lab_client) {
+    $this->entityTypeManager = $entity_type_manager;
     $this->farmLabClient = $farm_lab_client;
   }
 
@@ -42,6 +53,7 @@ class FarmLabBoundariesForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
+      $container->get('entity_type.manager'),
       $container->get('farm_farmlab.farmlab_client'),
     );
   }
@@ -62,7 +74,7 @@ class FarmLabBoundariesForm extends FormBase {
     $boundaries = $this->farmLabClient->getBoundaries(['active' => 'true']);
 
     // Query assets with farmlab_ids.
-    $asset_storage = \Drupal::entityTypeManager()->getStorage('asset');
+    $asset_storage = $this->entityTypeManager->getStorage('asset');
     $farmlab_asset_mapping = [];
     if ($boundary_ids = array_column($boundaries, 'id')) {
       $matches = $asset_storage->getAggregateQuery()
