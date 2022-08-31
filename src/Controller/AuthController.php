@@ -2,6 +2,7 @@
 
 namespace Drupal\farm_farmlab\Controller;
 
+use Drupal\Component\Serialization\Json;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Link;
 use Drupal\Component\Datetime\TimeInterface;
@@ -262,7 +263,33 @@ class AuthController extends ControllerBase {
     }
 
     // Connect the account.
-    if ($account = $this->farmLabClient->getAccount()) {
+    // The FarmLab server takes a second to propagate the token to other
+    // API servers and services.
+    sleep(2);
+    $account = NULL;
+    $response = $this->farmLabClient->request('GET', 'Account');
+
+    // Check for failure and retry.
+    if ($response->getStatusCode() != 200) {
+      $response = $this->farmLabClient->request('GET', 'Account');
+    }
+
+    // Check for failure and log message.
+    if ($response->getStatusCode() != 200) {
+      $response_body = Json::decode($response->getBody());
+      $error = BaseJson::encode($response_body, JSON_PRETTY_PRINT);
+      $this->getLogger('farm_farmlab')->error("Could not retrieve FarmLab account: $error");
+    }
+    else {
+      // Return the first account.
+      $response_body = Json::decode($response->getBody());
+      if (isset($response_body['payload']) && count($response_body['payload'])) {
+        $account = reset($response_body['payload']);
+      }
+    }
+
+    // Save the account to state.
+    if (!empty($account)) {
       \Drupal::state()->set('farm_farmlab.account_id', $account['id']);
     }
     else {
