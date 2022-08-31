@@ -68,7 +68,7 @@ class AuthController extends ControllerBase {
       '#type' => 'details',
       '#title' => $this->t('Debug info'),
       '#open' => FALSE,
-      '#weight' => 100,
+      '#weight' => 200,
     ];
 
     // Get the authenticated account.
