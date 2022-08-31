@@ -50,6 +50,7 @@ class FarmLabClientFactory {
 
     // Create client and set the current token.
     $client_config = [
+      'account_id' => $this->state->get('farm_farmlab.account_id'),
       'farm_id' => $this->state->get('farm_farmlab.farm_id'),
     ];
     $client = new FarmLabClient(

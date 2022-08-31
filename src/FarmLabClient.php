@@ -25,6 +25,13 @@ class FarmLabClient extends Client implements FarmLabClientInterface {
   protected $token;
 
   /**
+   * The connected account ID.
+   *
+   * @var int|null
+   */
+  protected $accountId;
+
+  /**
    * The connected farm ID.
    *
    * @var int|null
@@ -43,6 +50,7 @@ class FarmLabClient extends Client implements FarmLabClientInterface {
    */
   public function __construct(string $api_url, string $auth_url, array $config = []) {
     $this->authUrl = trim($auth_url, '/');
+    $this->accountId = $config['account_id'] ?? NULL;
     $this->farmId = $config['farm_id'] ?? NULL;
     $this->token = [];
     $default_config = [
@@ -71,22 +79,22 @@ class FarmLabClient extends Client implements FarmLabClientInterface {
    */
   public function getAccount() {
 
+    // Bail if no account ID.
+    if (empty($this->accountId)) {
+      return NULL;
+    }
+
     // Get the authenticated account.
-    $response = $this->request('GET', 'Account');
+    $response = $this->request('GET', "Account/$this->accountId");
 
     // Return empty on failure.
     if ($response->getStatusCode() != 200) {
       return NULL;
     }
 
-    // Return the first account.
+    // Return the account.
     $response_body = Json::decode($response->getBody());
-    if (isset($response_body['payload']) && count($response_body['payload'])) {
-      return reset($response_body['payload']);
-    }
-
-    // Else return empty array.
-    return NULL;
+    return $response_body['payload'] ?? NULL;
   }
 
   /**

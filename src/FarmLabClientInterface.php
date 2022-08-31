@@ -10,10 +10,10 @@ use GuzzleHttp\ClientInterface;
 interface FarmLabClientInterface extends ClientInterface {
 
   /**
-   * Helper function to get the authorized account.
+   * Helper function to get the connected account.
    *
    * @return array|null
-   *   The authorized account.
+   *   The account data.
    */
   public function getAccount();
 

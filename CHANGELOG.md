@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Add delay and retry attempt when fetching account during grant flow.
+- Change FarmLabClientInterface::getAccount() to only return the connected account.
 
 ## 1.0.0-alpha1 2022-08-30
 
