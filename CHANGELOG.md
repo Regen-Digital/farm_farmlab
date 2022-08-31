@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.0.0-alpha2 2022-08-31
+
 ### Changed
 
 - Add delay and retry attempt when fetching account during grant flow.
