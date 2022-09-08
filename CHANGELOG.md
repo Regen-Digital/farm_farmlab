@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add managed role permissions for `use farmlab` and `connect farmlab`.
 
+### Changed
+
+- Save the current user id to state and enforce that only this user can connect farms after authorizing farmlab.
+
 ## 1.0.0-alpha2 2022-08-31
 
 ### Changed

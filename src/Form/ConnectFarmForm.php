@@ -80,6 +80,12 @@ class ConnectFarmForm extends FormBase {
     $account_connected = AccessResult::allowedIf(!empty($account_id));
     $permission = $permission->andIf($account_connected);
 
+    // Ensure this is the same user that connected the account.
+    $user_id = $this->state->get('farm_farmlab.user_id');
+    $current_user_id = $this->currentUser()->id();
+    $same_user = AccessResult::allowedIf($user_id == $current_user_id);
+    $permission = $permission->andIf($same_user);
+
     // Ensure no farm_id is already connected.
     $farm_id = $this->state->get('farm_farmlab.farm_id');
     $farm_not_connected = AccessResult::allowedIf(empty($farm_id));

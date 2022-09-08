@@ -288,8 +288,9 @@ class AuthController extends ControllerBase {
       }
     }
 
-    // Save the account to state.
+    // Save the farmOS user and FarmLab account to state.
     if (!empty($account)) {
+      $this->state()->set('farm_farmlab.user_id', $this->currentUser()->id());
       $this->state()->set('farm_farmlab.account_id', $account['id']);
     }
     else {
@@ -307,6 +308,7 @@ class AuthController extends ControllerBase {
     $this->state()->delete('farm_farmlab.token');
     $this->state()->delete('farm_farmlab.account_id');
     $this->state()->delete('farm_farmlab.farm_id');
+    $this->state()->delete('farm_farmlab.user_id');
     $this->messenger()->addMessage($this->t('The FarmLab authentication was reset.'));
     return new RedirectResponse(Url::fromRoute('farm_farmlab.status')->toString());
   }
