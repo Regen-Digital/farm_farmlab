@@ -64,14 +64,6 @@ class AuthController extends ControllerBase {
   public function status(): array {
     $render = [];
 
-    // Start a debug area.
-    $render['debug'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Debug info'),
-      '#open' => FALSE,
-      '#weight' => 200,
-    ];
-
     // Get the authenticated account.
     $account = $this->farmLabClient->getAccount();
 
@@ -108,6 +100,14 @@ class AuthController extends ControllerBase {
       $render['revoke']['#attributes']['class'][] = 'button';
       $render['revoke']['#attributes']['class'][] = 'button--danger';
     }
+
+    // Start a debug area.
+    $render['debug'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Debug info'),
+      '#open' => FALSE,
+      '#weight' => 200,
+    ];
 
     // Render list of account attributes.
     $account_keys = [
