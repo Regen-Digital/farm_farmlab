@@ -12,7 +12,7 @@ farm_farmlab.status:
     _controller: Drupal\farm_farmlab\Controller\AuthController::status
   requirements:
     _permission:
-      'use farmlab'
+      'connect farmlab'
 farm_farmlab.connect:
   path: 'farmlab/auth/connect'
   defaults:
