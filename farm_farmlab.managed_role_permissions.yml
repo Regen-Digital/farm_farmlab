@@ -1,0 +1,5 @@
+farm_farmlab:
+  default_permissions:
+    - use farmlab
+  config_permissions:
+    - connect farmlab

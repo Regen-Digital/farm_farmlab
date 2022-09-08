@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add managed role permissions for `use farmlab` and `connect farmlab`.
+
 ## 1.0.0-alpha2 2022-08-31
 
 ### Changed
