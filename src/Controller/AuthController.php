@@ -4,6 +4,7 @@ namespace Drupal\farm_farmlab\Controller;
 
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Link;
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Url;
@@ -26,6 +27,13 @@ class AuthController extends ControllerBase {
   protected $time;
 
   /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * The FarmLabClient.
    *
    * @var \Drupal\farm_farmlab\FarmLabClientInterface
@@ -37,11 +45,14 @@ class AuthController extends ControllerBase {
    *
    * @param \Drupal\Component\Datetime\TimeInterface $time
    *   The time service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    * @param \Drupal\farm_farmlab\FarmLabClientInterface $farm_lab_client
    *   The FarmLabClient.
    */
-  public function __construct(TimeInterface $time, FarmLabClientInterface $farm_lab_client) {
+  public function __construct(TimeInterface $time, EntityTypeManagerInterface $entity_type_manager, FarmLabClientInterface $farm_lab_client) {
     $this->time = $time;
+    $this->entityTypeManager = $entity_type_manager;
     $this->farmLabClient = $farm_lab_client;
   }
 
@@ -51,6 +62,7 @@ class AuthController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('datetime.time'),
+      $container->get('entity_type.manager'),
       $container->get('farm_farmlab.farmlab_client'),
     );
   }
@@ -138,17 +150,32 @@ class AuthController extends ControllerBase {
       '#rows' => 8,
     ];
 
+    // Display the connected farm.
+    $render['farm'] = [
+      '#theme' => 'item_list',
+      '#list_type' => 'ul',
+      '#title' => $this->t('Connected farm'),
+      '#items' => [],
+    ];
+
     // If no farm_id is set, display link to select a farm.
     if (!$this->state()->get('farm_farmlab.farm_id')) {
-      $render['farm'] = [
-        '#type' => 'container',
-        'message' => [
-          '#markup' => $this->t('No FarmLab farm connected. A FarmLab Farm must be connected to sync boundaries between applications.'),
-        ],
-      ];
-      $render['select-farm'] = Link::createFromRoute($this->t('Connect FarmLab farm'), 'farm_farmlab.connect_farm')->toRenderable();
-      $render['select-farm']['#weight'] = 50;
-      $render['select-farm']['#attributes']['class'][] = 'button';
+
+      // Add message.
+      $render['farm']['#items'][] = $this->t('No FarmLab farm connected. A FarmLab Farm must be connected to sync boundaries between applications.');
+
+      // Check if this is the same user that authorized access.
+      // If not, add a message requesting the original user to connect a farm.
+      $user_id = $this->state()->get('farm_farmlab.user_id');
+      if ($user_id != $this->currentUser()->id() && $user = $this->entityTypeManager->getStorage('user')->load($user_id)) {
+        $render['farm']['#items'][] = $this->t('Please ask %user to finish connecting a FarmLab farm. Only the user that initially connected their FarmLab account can connect a farm.', ['%user' => $user->label()]);
+      }
+      // Else include a link to connect the farmlab farm.
+      else {
+        $render['select-farm'] = Link::createFromRoute($this->t('Connect FarmLab farm'), 'farm_farmlab.connect_farm')->toRenderable();
+        $render['select-farm']['#weight'] = 50;
+        $render['select-farm']['#attributes']['class'][] = 'button';
+      }
     }
     // Else display selected farm info.
     elseif ($farm = $this->farmLabClient->getFarm()) {
@@ -162,12 +189,6 @@ class AuthController extends ControllerBase {
         'ownerEmail' => $this->t("Owner's email"),
         'desc' => $this->t('Description'),
         'notes' => $this->t('Notes'),
-      ];
-      $render['farm'] = [
-        '#theme' => 'item_list',
-        '#list_type' => 'ul',
-        '#title' => $this->t('Connected farm'),
-        '#items' => [],
       ];
       foreach ($farm_keys as $key => $label) {
         if ($value = $farm[$key]) {
