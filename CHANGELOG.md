@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add dependency on guzzlehttp/guzzle ^7.4.5.
+
+### Fixed
+
+- Update FarmLabClient::requestAsync declaration to be compatible with Client::requestAsync. [#6](https://github.com/paul121/farm_farmlab/issues/6)
+
 ## 1.0.0-beta1 2022-09-08
 
 ### Added

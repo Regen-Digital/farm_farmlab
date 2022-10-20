@@ -4,6 +4,7 @@ namespace Drupal\farm_farmlab;
 
 use Drupal\Component\Serialization\Json;
 use GuzzleHttp\Client;
+use GuzzleHttp\Promise\PromiseInterface;
 
 /**
  * FarmLab client.
@@ -64,7 +65,7 @@ class FarmLabClient extends Client implements FarmLabClientInterface {
   /**
    * {@inheritdoc}
    */
-  public function requestAsync($method, $uri = '', array $options = []) {
+  public function requestAsync(string $method, $uri = '', array $options = []): PromiseInterface {
 
     // Build an authorization header for each request refreshing the OAuth
     // token when necessary.
