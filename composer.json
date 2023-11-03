@@ -10,6 +10,6 @@
   ],
   "require": {
     "guzzlehttp/guzzle": "^7.4.5",
-    "farmos/farmos": "^2.0.0-beta4"
+    "farmos/farmos": "^2.0.0-beta4 || ^3.0"
   }
 }
