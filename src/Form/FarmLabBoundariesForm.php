@@ -78,6 +78,7 @@ class FarmLabBoundariesForm extends FormBase {
     $farmlab_asset_mapping = [];
     if ($boundary_ids = array_column($boundaries, 'id')) {
       $matches = $asset_storage->getAggregateQuery()
+        ->accessCheck(TRUE)
         ->condition('id_tag.%delta.type', 'farmlab_id')
         ->condition('id_tag.%delta.id', $boundary_ids, 'IN')
         ->groupBy('id_tag.%delta.type')
