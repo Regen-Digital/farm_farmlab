@@ -7,6 +7,10 @@ farmOS integration with [FarmLab](https://www.farmlab.com.au/)
 This module is an add-on for the [farmOS](http://drupal.org/project/farm)
 distribution.
 
+**Regen Digital no longer supports development of this module. All development has been moved to the Drupal [Farm FarmLab project](https://www.drupal.org/project/farm_farmlab) and [Gitlab repo](https://git.drupalcode.org/project/farm_farmlab/).**
+
+**Git history and releases were already synced to the Gitalb repo and documented as the recommended installation, no changes are required to users of this module.**
+
 <!---
 Geting started.
 -->
