@@ -216,7 +216,15 @@ class FarmLabBoundariesForm extends FormBase {
       }
       // Catch error if geophp doesn't parse the geometry.
       catch (\Exception $error) {
-        $this->messenger()->addError($this->t('Boundary %boundaryName has invalid geometry: %error', ['%boundaryName' => $boundary['name'], '%error' => $error->getMessage()]));
+        $this->messenger()->addError(
+           $this->t(
+             'Boundary %boundaryName has invalid geometry: %error',
+             [
+               '%boundaryName' => $boundary['name'],
+               '%error'        => $error->getMessage(),
+             ],
+           )
+         );
         continue;
       }
 
