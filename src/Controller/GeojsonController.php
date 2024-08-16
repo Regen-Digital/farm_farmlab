@@ -69,7 +69,7 @@ class GeojsonController extends ControllerBase {
       $geojson['features'][] = $feature;
     }
 
-    return JsonResponse::create($geojson);
+    return new JsonResponse($geojson);
   }
 
   /**
@@ -120,7 +120,7 @@ class GeojsonController extends ControllerBase {
       ];
     }
 
-    return JsonResponse::create($geojson);
+    return new JsonResponse($geojson);
   }
 
 }
