@@ -24,5 +24,7 @@ include:
 # Uncomment the lines below if you want to override any of the variables. The following is just an example.
 ################
 variables:
+  # Update _TARGET_CORE as farmOS updates Drupal core dep.
+  _TARGET_CORE: 10.2.7
   _PHPUNIT_CONCURRENT: '1'
   COMPOSER_EXTRA: '--ignore-platform-req=ext-sodium'
