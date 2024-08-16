@@ -23,82 +23,28 @@ Install as you would normally install a contributed drupal module.
 composer require 'drupal/farm_farmlab:^1.0'
 ```
 
-<!---
-Document any special configuration the module requires. For example:
-- API Keys
-- Additional settings options
-- External (client) configuration
--->
 ### Configuration
 
 ## Authentication
 
-TBD
+A FarmLab API key is required to use this module. Contact FarmLab for more info.
 
-<!---
-Document features the module provides.
--->
 ## Features
 
-<!---
-Document features related to different entity types. For example:
-- Assets, logs, taxonomies, quantity types, data streams
-  - Base fields (added to all bundles)
-  - Bundle fields (added to single bundles)
-- Quick Forms
-- Field modules
-- Special logic
-- Other special features as needed
--->
-### Assets
+### Boundaries
 
-Adds fields to all asset types:
-- `example_1` (string): An example field.
-- `example_2` (string): Another example field.
+This module adds the ability to sync farm boundaries between farmOS and FarmLab.
 
-<!---
-Document features related to a single bundle.
--->
-#### Land assets
+### Cadastrals
 
-Adds a new `example` land type for land assets.
+This module integrates with the FarmLab Cadastrals API to facilitate easily
+syncing cadastrals info farmOS Land Assets.
 
-<!---
-Document any quick forms provided by this module.
--->
-### Quick Forms
-
-<!---
-Document any field modules provided by this module.
--->
-### Field Modules
-
-<!---
-Document any logic provided by this module.
--->
-### Logic
-
-<!---
-Document any other features provided by this module.
--->
-### Other
-
-<!---
-It might be nice to include a FAQ.
--->
-## FAQ
-
-<!---
-Include maintainers.
--->
 ## Maintainers
 
 Current maintainers:
 - Paul Weidner [@paul121](https://github.com/paul121)
 
-<!---
-Include sponsors.
--->
 ## Sponsors
 This project has been sponsored by:
 - [Regen Digital](https://regenfarmersmutual.com/regendigital/)
