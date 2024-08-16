@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Require farmOS ^3.0.
+
 ### Fixed
 
 - Instantiate correct JsonResponse.
