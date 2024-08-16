@@ -9,9 +9,9 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element\Checkboxes;
+use Drupal\Core\State\StateInterface;
 use Drupal\farm_farmlab\FarmLabClientInterface;
 use Drupal\farm_geo\Traits\WktTrait;
-use Drupal\Core\State\StateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
